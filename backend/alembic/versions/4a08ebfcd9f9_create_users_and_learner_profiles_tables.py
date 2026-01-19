@@ -1,8 +1,8 @@
 """Create users and learner_profiles tables
 
-Revision ID: ab917c0f2f0d
+Revision ID: 4a08ebfcd9f9
 Revises: 
-Create Date: 2026-01-19 11:38:57.853802
+Create Date: 2026-01-19 15:10:16.351866
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'ab917c0f2f0d'
+revision: str = '4a08ebfcd9f9'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,7 +25,7 @@ def upgrade() -> None:
     sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('password_hash', sa.String(length=255), nullable=False),
     sa.Column('full_name', sa.String(length=255), nullable=False),
-    sa.Column('user_role', sa.Enum('LEARNER', 'INSTRUCTOR', 'ADMIN', name='userrole'), nullable=False),
+    sa.Column('user_role', postgresql.ENUM('LEARNER', 'INSTRUCTOR', 'ADMIN', name='userrole', create_type=False), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('email_verified', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
@@ -42,7 +42,7 @@ def upgrade() -> None:
     sa.Column('user_id', sa.UUID(), nullable=False),
     sa.Column('learning_style', sa.String(length=50), nullable=True),
     sa.Column('preferred_pace', sa.String(length=50), nullable=True),
-    sa.Column('study_hours__per_week', sa.Integer(), nullable=True),
+    sa.Column('study_hours_per_week', sa.Integer(), nullable=True),
     sa.Column('skill_levels', postgresql.JSONB(astext_type=sa.Text()), nullable=False),
     sa.Column('knowledge_gaps', postgresql.JSONB(astext_type=sa.Text()), nullable=False),
     sa.Column('avg_session_duration_mins', sa.Integer(), nullable=True),

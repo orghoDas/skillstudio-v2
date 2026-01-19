@@ -1,12 +1,12 @@
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import bcrypt
 from app.core.config import settings
 
 
-# Password hashing context
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Password hashing helpers (use bcrypt directly to avoid passlib/backends issues)
+MAX_BCRYPT_PASSWORD_BYTES = 72
 
 
 # ============================================
@@ -24,7 +24,14 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     Returns:
         True if password matches, False otherwise
     """
-    return pwd_context.verify(plain_password, hashed_password)
+    # bcrypt.checkpw expects bytes
+    pw_bytes = plain_password.encode("utf-8")
+    if len(pw_bytes) > MAX_BCRYPT_PASSWORD_BYTES:
+        pw_bytes = pw_bytes[:MAX_BCRYPT_PASSWORD_BYTES]
+    try:
+        return bcrypt.checkpw(pw_bytes, hashed_password.encode("utf-8"))
+    except Exception:
+        return False
 
 
 def get_password_hash(password: str) -> str:
@@ -37,7 +44,11 @@ def get_password_hash(password: str) -> str:
     Returns:
         Hashed password
     """
-    return pwd_context.hash(password)
+    pw_bytes = password.encode("utf-8")
+    if len(pw_bytes) > MAX_BCRYPT_PASSWORD_BYTES:
+        pw_bytes = pw_bytes[:MAX_BCRYPT_PASSWORD_BYTES]
+    hashed = bcrypt.hashpw(pw_bytes, bcrypt.gensalt())
+    return hashed.decode("utf-8")
 
 
 # ============================================

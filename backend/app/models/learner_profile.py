@@ -21,7 +21,7 @@ class LearnerProfile(Base):
     #  learning preferences
     learning_style = Column(String(50), nullable=True)  # e.g., visual, auditory, kinesthetic, reading
     preferred_pace = Column(String(50), nullable=True)  # e.g., slow, med, fast
-    study_hours__per_week = Column(Integer, nullable=True)
+    study_hours_per_week = Column(Integer, nullable=True)
 
     # skill levels (JSONB)
     # example structure: {'python': 7, 'sql': 5, 'data_analysis': 6}
