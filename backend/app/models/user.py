@@ -47,6 +47,22 @@ class User(Base):
         'LearnerProfile', back_populates='user', uselist=False, cascade='all, delete-orphan'
     )
 
+    courses_created = relationship(
+        'Course', back_populates='instructor', cascade='all, delete-orphan'
+    )
+
+    learning_goals = relationship(
+        'LearningGoal', back_populates='user', cascade='all, delete-orphan'
+    )
+
+    enrollments = relationship(
+        'Enrollment', back_populates='user', cascade='all, delete-orphan'
+    ) 
+
+    lesson_progress = relationship(
+        'LessonProgress', back_populates='user', cascade='all, delete-orphan'
+    )
+
     def __repr__(self):
         return f'<User {self.email} ({self.role.value})>'
     
