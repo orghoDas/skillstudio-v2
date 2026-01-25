@@ -37,18 +37,31 @@ class CourseUpdate(CourseBase):
 
 
 class CourseResponse(CourseBase):
-    # schema for course response
+    """Schema for course response (detailed)"""
+    id: UUID
+    created_by: UUID
+    is_published: bool
+    total_enrollments: int
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
+class CourseListResponse(BaseModel):
+    """Schema for listing courses (summary)"""
     id: UUID
     title: str
     short_description: Optional[str]
     difficulty_level: DifficultyLevel
-    est_duration_minutes: Optional[int]
-    skills_taught: list[str]
+    estimated_duration_hours: Optional[int]
+    skills_taught: List[str]
     thumbnail_url: Optional[str]
     is_published: bool
     total_enrollments: int
     created_at: datetime
-
+    
     class Config:
         from_attributes = True
 
