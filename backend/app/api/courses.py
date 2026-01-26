@@ -28,7 +28,7 @@ async def create_course(
         description = course_data.description,
         short_description = course_data.short_description,
         difficulty_level = course_data.difficulty_level,
-        est_duration_hours = course_data.est_duration_hours,
+        estimated_duration_hours=course_data.estimated_duration_hours,
         skills_taught = course_data.skills_taught,
         prerequisites = course_data.prerequisites,
         thumbnail_url = course_data.thumbnail_url,
@@ -51,7 +51,7 @@ async def list_courses(
     db: AsyncSession = Depends(get_db)
 ):
     
-    # list all courses with optional filters/
+    # list all courses with optional filters
     query = select(Course)
 
     if published_only:
@@ -271,7 +271,7 @@ async def create_lesson(
         content_url = lesson_data.content_url,
         content_body = lesson_data.content_body,
         content_metadata = lesson_data.content_metadata,
-        est_minutes = lesson_data.est_minutes,
+        estimated_minutes=lesson_data.estimated_minutes,
         difficulty_score = lesson_data.difficulty_score,
         prerequisites = lesson_data.prerequisites,
         skill_tags = lesson_data.skill_tags,

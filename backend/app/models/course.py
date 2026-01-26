@@ -31,10 +31,10 @@ class Course(Base):
 
     # course attributes
     difficulty_level = Column(SQEnum(DifficultyLevel, name="difficulty_level"), nullable=False, default=DifficultyLevel.BEGINNER)
-    est_duration_hours = Column(Integer, nullable=True)
+    estimated_duration_hours = Column(Integer, nullable=True)
 
     # skills & prerequisites
-    skills__taught = Column(JSONB, default=[], nullable=False) 
+    skills_taught = Column(JSONB, default=[], nullable=False) 
     prerequisites = Column(JSONB, default=[], nullable=False)
 
     # media
@@ -112,7 +112,7 @@ class Lesson(Base):
     content_metadata = Column(JSONB, default={}, nullable=False)  # additional metadata
 
     # learning attributes
-    est_minutes = Column(Integer, nullable=True)
+    estimated_minutes = Column(Integer, nullable=True)
     difficulty_score = Column(Integer, nullable=True)  # e.g., 1-10 scale
 
     # prerequisites 

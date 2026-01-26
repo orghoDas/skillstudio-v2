@@ -12,7 +12,7 @@ class CourseBase(BaseModel):
     description: Optional[str] = None
     short_description: Optional[str] = Field(None, max_length=500)
     difficulty_level: DifficultyLevel = DifficultyLevel.BEGINNER
-    est_duration_minutes: Optional[int] = Field(None, gt=0)
+    estimated_duration_hours: Optional[int] = Field(None, gt=0)
     skills_taught: list[str] = []
     prerequisites: list[dict] = []
     thumbnail_url: Optional[str] = None
@@ -106,7 +106,7 @@ class LessonBase(BaseModel):
     content_url: Optional[str] = None
     content_body: Optional[str] = None
     content_metadata: dict = {} 
-    est_mins : Optional[int] = Field(None, gt=0)
+    estimated_minutes : Optional[int] = Field(None, gt=0)
     difficulty_score : Optional[int] = Field(None, ge=1, le=10)
     prerequisites: list[dict] = []
     skill_tags : list[str] = []
@@ -126,7 +126,7 @@ class LessonUpdate(LessonBase):
     content_url: Optional[str] = None
     content_body: Optional[str] = None
     content_metadata: Optional[dict] = None
-    est_mins : Optional[int] = Field(None, gt=0)
+    estimated_minutes : Optional[int] = Field(None, gt=0)
     difficulty_score : Optional[int] = Field(None, ge=1, le=10)
     prerequisites: Optional[list[dict]] = None
     skill_tags : Optional[list[str]] = None
