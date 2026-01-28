@@ -150,7 +150,7 @@ async def enroll_in_course(
     db.add(new_enrollment)
 
     # update course enrollment count
-    course.enrollment_count += 1
+    course.total_enrollments += 1
     await db.commit()
     await db.refresh(new_enrollment)
 
@@ -214,7 +214,9 @@ async def update_lesson_progress(
     # update fields
     update_data = progress_data.dict(exclude_unset=True)
     for field, value in update_data.items():
-        if field == 'time_spent_seconds' and value:
+        if field == 'time_spent_seconds' and value is not None:
+            if progress.time_spent_seconds is None:
+                progress.time_spent_seconds = 0
             progress.time_spent_seconds += value
 
         else:
