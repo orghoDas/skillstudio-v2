@@ -32,7 +32,7 @@ class LearnerProfile(Base):
     knowledge_gaps = Column(JSONB, default=[], nullable=False)
 
     # behavioral metrics
-    avg_session_duration_mins = Column(Integer, nullable=True)
+    avg_session_duration_minutes = Column(Integer, nullable=True)
 
     # preferred study times (JSONB)
     # example structure: [{'day': 'monday', 'hour': 20}, {'day': 'wednesday', 'hour': 18}]

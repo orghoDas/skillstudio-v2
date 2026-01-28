@@ -125,7 +125,7 @@ class Lesson(Base):
     sequence_order = Column(Integer, nullable=False)
     is_published = Column(Boolean, default=False)
 
-    creaated_at = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     # relationships
