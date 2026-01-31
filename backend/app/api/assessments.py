@@ -222,3 +222,76 @@ async def get_diagnostic_result(
 
 
 # helper functions
+def grade_assessment(questions: List[AssessmentQuestion], user_answers: List[dict]) -> dict:
+    # grading logic here
+    total_points = sum(q.points for q in questions)
+    points_earned = 0
+    skill_points = {}
+    skill_totals = {}
+
+    graded_answers = []
+
+    # create lookup dict for user answers
+    answer_dict = {ans['question_id']: ans for ans in user_answers}
+
+    for question in questions:
+        user_answer = answer_dict.get(str(question.id), {}).get('answer')
+
+        # check if answer is correct
+        correct = user_answer(user_answer, question.correct_answer, question.question_type)
+
+        if correct:
+            points_earned += question.points
+
+        # track by skill
+        for skill in question.skill_tags:
+            if skill not in skill_points:
+                skill_points[skill] = 0
+                skill_totals[skill] = 0
+
+            skill_totals[skill] += question.points
+            if correct:
+                skill_points[skill] += question.points
+
+        graded_answers.append({
+            'question_id': str(question.id),
+            'user_answer': user_answer,
+            'correct_answer': question.correct_answer,
+            'correct': correct,
+            'points_earned': question.points if correct else 0,
+            'explanation': question.explanation
+        })
+
+    # calculate skill scores (0-1 scale)
+    skill_scores = {}
+    for skill, points in skill_points.items():
+        if skill_totals[skill] > 0:
+            skill_scores[skill] = round(points / skill_totals[skill], 2)
+
+    return {
+        'score_percentage': round((points_earned / total_points * 100), 2) if total_points > 0 else 0,
+        'points_earned': points_earned,
+        'points_possible': total_points,
+        'answers': graded_answers,
+        'skill_scores': skill_scores
+    }
+
+
+def check_answer(user_answer, correct_answer: dict, question_type: str) -> bool:
+    # check if user's answer is correct
+    if user_answer is None:
+        return False
+    
+    if question_type == 'mcq':
+        return user_answer == correct_answer.get('answer')
+    
+    elif question_type == 'true_false':
+        return user_answer == correct_answer.get('answer')
+    
+    elif question_type == 'code':
+        # for code questions, we run tests, simplified here
+        return True
+    
+    return False
+
+
