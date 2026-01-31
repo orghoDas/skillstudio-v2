@@ -31,6 +31,16 @@ from app.schemas.profile import (
     LearnerProfileResponse
 )
 
+from app.schemas.assessment import (
+    AssessmentCreate,
+    AssessmentResponse,
+    QuestionCreate,
+    QuestionResponse,
+    SubmitAnswerRequest,
+    AssessmentAttemptResponse,
+    DiagnosticResultResponse
+)
+
 __all__ = [
     # User
     "UserCreate",
@@ -60,4 +70,12 @@ __all__ = [
     # Profile
     "LearnerProfileUpdate",
     "LearnerProfileResponse",
+    # Assessment
+    "AssessmentCreate",
+    "AssessmentResponse",
+    "QuestionCreate",
+    "QuestionResponse",
+    "SubmitAnswerRequest",
+    "AssessmentAttemptResponse",
+    "DiagnosticResultResponse"
 ]
