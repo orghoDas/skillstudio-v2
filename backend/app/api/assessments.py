@@ -170,7 +170,7 @@ async def submit_assessment(
         answers = grading_result['detailed_answers'],
         skill_scores = grading_result['skill_scores'],
         attempt_number=attempt_number,
-        passed=grading_result['scored_percentage'] >= assessment.passing_score
+        passed=grading_result['scored_percentage'] >= assessment.passing_score,
         feedback = generate_feedback(grading_result)
     )
 
@@ -295,3 +295,94 @@ def check_answer(user_answer, correct_answer: dict, question_type: str) -> bool:
     return False
 
 
+def generate_feedback(grading_result: dict) -> str:
+    # generate ai powered feedback based on results
+    score = grading_result['score_percentage']
+    skill_scores = grading_result['skill_scores']
+
+    feedback_parts = []
+
+    # overall performance
+    if score >= 90:
+        feedback_parts.append("Excellent work! You have a strong understanding of the material.")
+    elif score >= 75:
+        feedback_parts.append("Good job! You have a solid grasp but there's room for improvement.")
+    elif score >= 50:
+        feedback_parts.append("Fair effort. Consider reviewing the material to strengthen your understanding.")
+    else:
+        feedback_parts.append("Needs improvement. Focus on the areas where you struggled the most.")
+
+    # skill-specific feedback 
+    weak_skills = [skill for skill, score in skill_scores.items() if score < 0.6]
+    strong_skills = [skill for skill, score in skill_scores.items() if score >= 0.8]
+
+    if strong_skills:
+        feedback_parts.append(f"Your strengths are in: {', '.join(strong_skills)}.")
+
+    if weak_skills:
+        feedback_parts.append(f"Consider focusing on improving: {', '.join(weak_skills)}.")
+
+    return " ".join(feedback_parts)
+
+
+async def update_learner_profile_from_diagnostic(
+        user_id: UUID,
+        skill_scores: dict,
+        db: AsyncSession):
+    
+    # update leaner profile based on diagnostic results
+    result = await db.execute(select(LearnerProfile).where(LearnerProfile.user_id == user_id))
+    profile = result.scalar_one_or_none()
+
+    if not profile:
+        profile = LearnerProfile(user_id=user_id)
+        db.add(profile)
+
+    # convert skill score to 1-10 scale
+    skill_levels = {skill: int(score * 10) for skill, score in skill_scores.items()}
+
+    # identify knowledge gaps
+    knowledge_gaps = [skill for skill, score in skill_scores.items() if score < 5]
+
+    profile.skill_levels = skill_levels
+    profile.knowledge_gaps = knowledge_gaps
+
+    await db.commit()
+
+
+async def recommend_courses_for_skills(skills: List[str], db: AsyncSession) -> List[UUID]:
+    # recommend courses based on skills
+    from app.models.course import Course
+    from sqlalchemy import or_
+
+    if not skills:
+        return []
+    
+    # find courses that teach any of the needed skills
+    result = await db.execute(
+        select(Course)
+        .where(Course.is_published == True,
+               #check if any skill in skills_taught matches our needed skills
+               Course.skills_taught.op('?|')(skills)).limit(5))
+    
+    courses = result.scalars().all()
+    return [course.id for course in courses]
+
+
+def generate_initial_learning_path(skill_levels: dict, knowledge_gaps: List[str]) -> List[dict]:
+    # generate a suggested learning path based on assessments
+    path = []
+
+    # start with foundational skills (lowest scores)
+    sorted_skills = sorted(skill_levels.items(), key=lambda x: x[1])
+
+    for skill, level in sorted_skills[:3]:
+        path.append({
+            'skill': skill,
+            'current_level': level,
+            'target_level': 7,
+            'priority': 'high' if level < 3 else 'medium',
+            'recommended__actions': f'take beginner courses on {skill}' if level < 5 else f'practice intermediate {skill} concepts'
+        })
+
+    return path
