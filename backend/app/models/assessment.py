@@ -33,7 +33,7 @@ class Assessment(Base):
 
     # relationships
     questions = relationship("AssessmentQuestion", back_populates="assessment", cascade="all, delete-orphan")
-    attemps = relationship("AssessmentAttempt", back_populates="assessment", cascade="all, delete-orphan")
+    attempts = relationship("AssessmentAttempt", back_populates="assessment", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Assessment {self.title}>'
