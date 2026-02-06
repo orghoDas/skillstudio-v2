@@ -13,16 +13,7 @@ import {
   ArrowRight,
   Flag,
 } from 'lucide-react';
-import { assessmentService } from '@/lib/assessment-service';
-
-interface Question {
-  id: string;
-  question_text: string;
-  question_type: 'multiple_choice' | 'true_false' | 'short_answer';
-  options: string[];
-  points: number;
-  skill_tags: string[];
-}
+import { assessmentService, type AssessmentQuestion } from '@/lib/assessment-service';
 
 export default function TakeAssessmentPage() {
   const params = useParams();
@@ -30,7 +21,7 @@ export default function TakeAssessmentPage() {
   const assessmentId = params.id as string;
 
   const [assessment, setAssessment] = useState<any>(null);
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<AssessmentQuestion[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
@@ -189,8 +180,8 @@ export default function TakeAssessmentPage() {
 
           {/* Answer Options */}
           <div className="space-y-3">
-            {currentQuestion.question_type === 'multiple_choice' &&
-              currentQuestion.options.map((option, idx) => (
+            {currentQuestion.question_type === 'mcq' &&
+              currentQuestion.options?.map((option: string, idx: number) => (
                 <button
                   key={idx}
                   onClick={() => handleAnswer(currentQuestion.id, option)}
@@ -261,7 +252,7 @@ export default function TakeAssessmentPage() {
           {currentQuestion.skill_tags.length > 0 && (
             <div className="mt-6 pt-6 border-t border-gray-200">
               <span className="text-sm text-gray-600">Skills tested: </span>
-              {currentQuestion.skill_tags.map((tag) => (
+              {currentQuestion.skill_tags.map((tag: string) => (
                 <span key={tag} className="ml-2 text-sm text-primary-600">
                   {tag}
                 </span>

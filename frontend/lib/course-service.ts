@@ -135,6 +135,11 @@ export const courseService = {
     }
   },
 
+  // Alias for getCourse
+  async getCourseById(courseId: string): Promise<Course> {
+    return this.getCourse(courseId);
+  },
+
   // Get modules for a course
   async getModules(courseId: string): Promise<Module[]> {
     try {
@@ -227,4 +232,9 @@ export const courseService = {
       throw new Error(getErrorMessage(error));
     }
   },
+};
+
+// Named export for getCourseById (alias for getCourse)
+export const getCourseById = (courseId: string): Promise<Course> => {
+  return courseService.getCourse(courseId);
 };

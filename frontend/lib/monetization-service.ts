@@ -1,6 +1,14 @@
-import { getAuthToken } from './auth';
+import api from './api';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+// Helper to get auth token
+const getAuthToken = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('token');
+  }
+  return null;
+};
 
 // Types
 export interface SubscriptionPlan {

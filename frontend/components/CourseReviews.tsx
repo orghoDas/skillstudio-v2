@@ -121,7 +121,7 @@ export default function CourseReviews({ courseId, userEnrolled = false }: Course
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Course Reviews</h2>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1">
-                {renderStars(Math.round(parseFloat(avgRating)))}
+                {renderStars(Math.round(typeof avgRating === 'number' ? avgRating : parseFloat(avgRating)))}
               </div>
               <span className="text-3xl font-bold text-gray-900">{avgRating}</span>
               <span className="text-gray-600">({reviews.length} reviews)</span>

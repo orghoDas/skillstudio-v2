@@ -30,6 +30,11 @@ from app.models.monetization import (
     PaymentMethod,
     PayoutStatus
 )
+from app.models.notification import (
+    Notification,
+    NotificationPreference,
+    NotificationType
+)
 
 __all__ = [
     "User",
@@ -68,5 +73,8 @@ __all__ = [
     "CoursePricing",
     "PaymentStatus",
     "PaymentMethod",
-    "PayoutStatus"
+    "PayoutStatus",
+    "Notification",
+    "NotificationPreference",
+    "NotificationType"
 ]
