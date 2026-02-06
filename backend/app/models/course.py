@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, DateTime, Integer, String, Text, Boolean, ForeignKey, Enum as SQEnum
+from sqlalchemy import Column, DateTime, Integer, String, Text, Boolean, ForeignKey, Enum as SQEnum, Numeric
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -48,6 +48,7 @@ class Course(Base):
 
     # statistics
     total_enrollments = Column(Integer, default=0)
+    average_rating = Column(Numeric(3, 2), nullable=True)  # e.g., 4.75
 
     # timestamps
     created_at = Column(DateTime(timezone=True), server_default=func.now())

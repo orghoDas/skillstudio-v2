@@ -11,7 +11,8 @@ import {
   Award,
   ArrowRight,
   Target,
-  Loader2
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -19,6 +20,7 @@ export default function DashboardPage() {
   const [recommendations, setRecommendations] = useState<CourseRecommendation[]>([]);
   const [nextAction, setNextAction] = useState<NextBestAction | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!authService.isAuthenticated()) {
@@ -31,14 +33,16 @@ export default function DashboardPage() {
 
   const loadDashboardData = async () => {
     try {
+      setError(null);
       const [recs, action] = await Promise.all([
         aiService.getRecommendations(6),
         aiService.getNextBestAction(),
       ]);
       setRecommendations(recs);
       setNextAction(action);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load dashboard:', error);
+      setError(error.message || 'Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
@@ -61,10 +65,58 @@ export default function DashboardPage() {
     return 'text-gray-600';
   };
 
+  const handleNextAction = () => {
+    if (!nextAction) return;
+    
+    const action = nextAction.action.toLowerCase();
+    
+    if (action.includes('learning_path') || action.includes('path')) {
+      router.push('/dashboard/learning-path');
+    } else if (action.includes('skill_gap') || action.includes('gap')) {
+      router.push('/dashboard/skill-gaps');
+    } else if (action.includes('course')) {
+      router.push('/dashboard/courses');
+    } else if (action.includes('assessment')) {
+      // Navigate to assessments page
+      router.push('/dashboard/assessments');
+    } else {
+      // Default: go to courses
+      router.push('/dashboard/courses');
+    }
+  };
+
+  const handleViewCourse = (courseId: string) => {
+    // Future: Navigate to course detail page
+    // For now, show a message
+    alert(`Course detail page coming soon!\nCourse ID: ${courseId}`);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 flex items-start gap-4">
+            <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h3 className="text-lg font-semibold text-red-900 mb-2">Failed to Load Dashboard</h3>
+              <p className="text-red-700 mb-4">{error}</p>
+              <button 
+                onClick={loadDashboardData}
+                className="btn-primary"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -89,10 +141,15 @@ export default function DashboardPage() {
                 <span className="text-sm font-medium opacity-90">AI Recommendation</span>
               </div>
               <h2 className="text-2xl font-bold mb-2">
-                {nextAction.action.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                {String(nextAction.action || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </h2>
-              <p className="text-white/90 mb-4">{nextAction.reason}</p>
-              <button className="bg-white text-primary-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
+              <p className="text-white/90 mb-4">
+                {typeof nextAction.reason === 'string' ? nextAction.reason : JSON.stringify(nextAction.reason)}
+              </p>
+              <button 
+                onClick={handleNextAction}
+                className="bg-white text-primary-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center gap-2"
+              >
                 Take Action
                 <ArrowRight className="w-4 h-4" />
               </button>
@@ -172,12 +229,12 @@ export default function DashboardPage() {
 
               {/* Title */}
               <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-                {course.title}
+                {String(course.title || 'Untitled Course')}
               </h3>
 
               {/* Description */}
               <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                {course.description}
+                {String(course.description || '')}
               </p>
 
               {/* Duration */}
@@ -188,25 +245,28 @@ export default function DashboardPage() {
 
               {/* Skills */}
               <div className="flex flex-wrap gap-1 mb-3">
-                {course.skills_taught.slice(0, 3).map((skill, idx) => (
+                {Array.isArray(course.skills_taught) && course.skills_taught.slice(0, 3).map((skill, idx) => (
                   <span key={idx} className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
-                    {skill}
+                    {typeof skill === 'string' ? skill : String(skill)}
                   </span>
                 ))}
               </div>
 
               {/* Reasons */}
               <div className="mb-4">
-                {course.reasons.slice(0, 2).map((reason, idx) => (
+                {Array.isArray(course.reasons) && course.reasons.slice(0, 2).map((reason, idx) => (
                   <div key={idx} className="flex items-start gap-2 text-xs text-gray-600 mb-1">
                     <Sparkles className="w-3 h-3 text-primary-500 mt-0.5 flex-shrink-0" />
-                    <span>{reason}</span>
+                    <span>{typeof reason === 'string' ? reason : String(reason)}</span>
                   </div>
                 ))}
               </div>
 
               {/* Action Button */}
-              <button className="btn-primary w-full text-sm">
+              <button 
+                onClick={() => handleViewCourse(course.course_id)}
+                className="btn-primary w-full text-sm"
+              >
                 View Course
               </button>
             </div>

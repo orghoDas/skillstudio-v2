@@ -123,9 +123,9 @@ export default function LearningPathPage() {
           <div>
             <h3 className="text-sm font-medium opacity-90 mb-2">Target Skills</h3>
             <div className="flex flex-wrap gap-2">
-              {learningPath.goal.target_skills.map((skill, idx) => (
+              {Array.isArray(learningPath.goal.target_skills) && learningPath.goal.target_skills.map((skill, idx) => (
                 <span key={idx} className="px-3 py-1 bg-white/20 backdrop-blur rounded-lg text-sm">
-                  {skill}
+                  {typeof skill === 'string' ? skill : String(skill)}
                 </span>
               ))}
             </div>
@@ -133,9 +133,9 @@ export default function LearningPathPage() {
           <div>
             <h3 className="text-sm font-medium opacity-90 mb-2">Skills to Learn</h3>
             <div className="flex flex-wrap gap-2">
-              {learningPath.skills_to_learn.slice(0, 4).map((skill, idx) => (
+              {Array.isArray(learningPath.skills_to_learn) && learningPath.skills_to_learn.slice(0, 4).map((skill, idx) => (
                 <span key={idx} className="px-3 py-1 bg-white/20 backdrop-blur rounded-lg text-sm">
-                  {skill}
+                  {typeof skill === 'string' ? skill : String(skill)}
                 </span>
               ))}
               {learningPath.skills_to_learn.length > 4 && (
@@ -205,7 +205,7 @@ export default function LearningPathPage() {
                 <div className="flex-1 bg-gray-50 rounded-lg p-6 hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{course.title}</h3>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">{String(course.title || 'Untitled Course')}</h3>
                       <div className="flex flex-wrap gap-2 mb-3">
                         <span className={`px-3 py-1 rounded-lg text-sm font-medium border ${getDifficultyColor(course.difficulty)}`}>
                           {course.difficulty}
@@ -219,7 +219,7 @@ export default function LearningPathPage() {
                   </div>
 
                   {/* Skills Gained */}
-                  {course.skills_gained.length > 0 && (
+                  {Array.isArray(course.skills_gained) && course.skills_gained.length > 0 && (
                     <div className="mb-3">
                       <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-1">
                         <TrendingUp className="w-4 h-4" />
@@ -229,7 +229,7 @@ export default function LearningPathPage() {
                         {course.skills_gained.map((skill, idx) => (
                           <span key={idx} className="px-3 py-1 bg-green-50 text-green-700 rounded-lg text-sm font-medium flex items-center gap-1">
                             <Check className="w-3 h-3" />
-                            {skill}
+                            {typeof skill === 'string' ? skill : String(skill)}
                           </span>
                         ))}
                       </div>
@@ -237,13 +237,13 @@ export default function LearningPathPage() {
                   )}
 
                   {/* Prerequisites */}
-                  {course.prerequisites && course.prerequisites.length > 0 && (
+                  {Array.isArray(course.prerequisites) && course.prerequisites.length > 0 && (
                     <div className="mb-4">
                       <h4 className="text-sm font-medium text-gray-700 mb-2">Prerequisites</h4>
                       <div className="flex flex-wrap gap-2">
                         {course.prerequisites.map((prereq, idx) => (
                           <span key={idx} className="px-3 py-1 bg-yellow-50 text-yellow-700 rounded-lg text-sm">
-                            {prereq}
+                            {typeof prereq === 'string' ? prereq : String(prereq)}
                           </span>
                         ))}
                       </div>
@@ -251,7 +251,10 @@ export default function LearningPathPage() {
                   )}
 
                   {/* Action Button */}
-                  <button className="btn-primary text-sm flex items-center gap-2">
+                  <button 
+                    onClick={() => alert(`Course enrollment coming soon!\nCourse: ${course.title}`)}
+                    className="btn-primary text-sm flex items-center gap-2"
+                  >
                     Start Learning
                     <ArrowRight className="w-4 h-4" />
                   </button>

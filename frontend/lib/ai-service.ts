@@ -1,5 +1,23 @@
 import api from './api';
 
+// Helper to extract error message from API response
+function getErrorMessage(error: any): string {
+  if (error.response?.data?.detail) {
+    const detail = error.response.data.detail;
+    // Handle validation errors (array of objects)
+    if (Array.isArray(detail)) {
+      return detail.map((err: any) => err.msg || JSON.stringify(err)).join(', ');
+    }
+    // Handle simple string errors
+    if (typeof detail === 'string') {
+      return detail;
+    }
+    // Handle object errors
+    return JSON.stringify(detail);
+  }
+  return error.message || 'An unexpected error occurred';
+}
+
 export interface CourseRecommendation {
   course_id: string;
   title: string;
@@ -81,23 +99,43 @@ export interface NextBestAction {
 
 export const aiService = {
   async getRecommendations(limit: number = 10): Promise<CourseRecommendation[]> {
-    const response = await api.get(`/ai/recommendations?limit=${limit}`);
-    return response.data.recommendations;
+    try {
+      const response = await api.get(`/ai/recommendations?limit=${limit}`);
+      return response.data.recommendations;
+    } catch (error: any) {
+      console.error('Failed to get recommendations:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
+    }
   },
 
   async getLearningPath(goalId?: string): Promise<LearningPath> {
-    const url = goalId ? `/ai/learning-path?goal_id=${goalId}` : '/ai/learning-path';
-    const response = await api.get(url);
-    return response.data;
+    try {
+      const url = goalId ? `/ai/learning-path?goal_id=${goalId}` : '/ai/learning-path';
+      const response = await api.get(url);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to get learning path:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
+    }
   },
 
   async getSkillGapAnalysis(): Promise<SkillGapAnalysis> {
-    const response = await api.get('/ai/skill-gap-analysis');
-    return response.data;
+    try {
+      const response = await api.get('/ai/skill-gap-analysis');
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to get skill gap analysis:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
+    }
   },
 
   async getNextBestAction(): Promise<NextBestAction> {
-    const response = await api.get('/ai/next-best-action');
-    return response.data;
+    try {
+      const response = await api.get('/ai/next-best-action');
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to get next best action:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
+    }
   },
 };

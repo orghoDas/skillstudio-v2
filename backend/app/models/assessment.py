@@ -80,7 +80,7 @@ class AssessmentAttempt(Base):
     assessment_id = Column(UUID(as_uuid=True), ForeignKey('assessments.id', ondelete="CASCADE"), nullable=False)
 
     # results
-    score_percecntage = Column(Numeric(5, 2), nullable=False)
+    score_percentage = Column(Numeric(5, 2), nullable=False)
     points_earned = Column(Integer, nullable=False)
     points_possible = Column(Integer, nullable=False)
 

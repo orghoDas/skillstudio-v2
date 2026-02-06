@@ -18,29 +18,55 @@ export interface User {
   role: string;
 }
 
+// Helper to extract error message from API response
+function getErrorMessage(error: any): string {
+  if (error.response?.data?.detail) {
+    const detail = error.response.data.detail;
+    // Handle validation errors (array of objects)
+    if (Array.isArray(detail)) {
+      return detail.map((err: any) => err.msg || JSON.stringify(err)).join(', ');
+    }
+    // Handle simple string errors
+    if (typeof detail === 'string') {
+      return detail;
+    }
+    // Handle object errors
+    return JSON.stringify(detail);
+  }
+  return error.message || 'An unexpected error occurred';
+}
+
 export const authService = {
   async login(credentials: LoginCredentials) {
-    const response = await api.post('/auth/login', credentials);
-    const { access_token, user } = response.data;
-    
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('token', access_token);
-      localStorage.setItem('user', JSON.stringify(user));
+    try {
+      const response = await api.post('/auth/login', credentials);
+      const { access_token, user } = response.data;
+      
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', access_token);
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+      
+      return { token: access_token, user };
+    } catch (error: any) {
+      throw new Error(getErrorMessage(error));
     }
-    
-    return { token: access_token, user };
   },
 
   async register(data: RegisterData) {
-    const response = await api.post('/auth/register', data);
-    const { access_token, user } = response.data;
-    
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('token', access_token);
-      localStorage.setItem('user', JSON.stringify(user));
+    try {
+      const response = await api.post('/auth/register', data);
+      const { access_token, user } = response.data;
+      
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', access_token);
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+      
+      return { token: access_token, user };
+    } catch (error: any) {
+      throw new Error(getErrorMessage(error));
     }
-    
-    return { token: access_token, user };
   },
 
   logout() {

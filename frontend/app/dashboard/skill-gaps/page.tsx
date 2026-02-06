@@ -155,11 +155,11 @@ export default function SkillGapsPage() {
           
           {analysis.strengths.length > 0 ? (
             <div className="space-y-3">
-              {analysis.strengths.map((strength, idx) => (
+              {Array.isArray(analysis.strengths) && analysis.strengths.map((strength, idx) => (
                 <div key={idx} className="flex items-center justify-between p-4 bg-green-50 rounded-lg border border-green-200">
                   <div className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-green-600" />
-                    <span className="font-medium text-gray-900">{strength.skill}</span>
+                    <span className="font-medium text-gray-900">{String(strength.skill || '')}</span>
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-bold text-green-600">{strength.level}</div>
@@ -185,17 +185,19 @@ export default function SkillGapsPage() {
           </h2>
           
           <div className="space-y-3">
-            {analysis.recommendations.map((rec, idx) => (
+            {Array.isArray(analysis.recommendations) && analysis.recommendations.map((rec, idx) => (
               <div key={idx} className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="flex items-start gap-3">
                   <Sparkles className="w-5 h-5 text-blue-600 mt-0.5" />
                   <div>
-                    <p className="text-gray-900 font-medium mb-1">{rec.message}</p>
-                    {rec.skills && rec.skills.length > 0 && (
+                    <p className="text-gray-900 font-medium mb-1">
+                      {typeof rec.message === 'string' ? rec.message : String(rec.message)}
+                    </p>
+                    {Array.isArray(rec.skills) && rec.skills.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-2">
                         {rec.skills.map((skill, sidx) => (
                           <span key={sidx} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">
-                            {skill}
+                            {typeof skill === 'string' ? skill : String(skill)}
                           </span>
                         ))}
                       </div>
@@ -216,14 +218,14 @@ export default function SkillGapsPage() {
         </h2>
 
         <div className="space-y-4">
-          {analysis.skill_gaps.map((gap, idx) => (
+          {Array.isArray(analysis.skill_gaps) && analysis.skill_gaps.map((gap, idx) => (
             <div key={idx} className="p-4 bg-gray-50 rounded-lg hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-bold text-gray-900">{gap.skill}</h3>
+                    <h3 className="text-lg font-bold text-gray-900">{String(gap.skill || '')}</h3>
                     <span className={`px-3 py-1 rounded-lg text-xs font-medium border ${getPriorityColor(gap.priority)}`}>
-                      {gap.priority.toUpperCase()} Priority
+                      {String(gap.priority || 'medium').toUpperCase()} Priority
                     </span>
                   </div>
                   
@@ -248,7 +250,10 @@ export default function SkillGapsPage() {
                 </div>
               </div>
 
-              <button className="btn-primary text-sm flex items-center gap-2">
+              <button 
+                onClick={() => router.push('/dashboard/courses')}
+                className="btn-primary text-sm flex items-center gap-2"
+              >
                 Find Courses
                 <ArrowRight className="w-4 h-4" />
               </button>

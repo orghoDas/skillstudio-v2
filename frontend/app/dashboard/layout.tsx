@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { authService } from '@/lib/auth';
 import { 
@@ -9,15 +9,23 @@ import {
   Map, 
   Target, 
   BookOpen,
+  ClipboardList,
   LogOut,
-  Sparkles 
+  Sparkles,
+  Award
 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const user = authService.getCurrentUser();
+  const [user, setUser] = useState<any>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setUser(authService.getCurrentUser());
+  }, []);
 
   const handleLogout = () => {
     authService.logout();
@@ -26,8 +34,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   const navItems = [
     { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { href: '/dashboard/my-courses', icon: Award, label: 'My Courses' },
     { href: '/dashboard/learning-path', icon: Map, label: 'Learning Path' },
     { href: '/dashboard/skill-gaps', icon: Target, label: 'Skill Gaps' },
+    { href: '/dashboard/assessments', icon: ClipboardList, label: 'Assessments' },
     { href: '/dashboard/courses', icon: BookOpen, label: 'Courses' },
   ];
 
@@ -79,17 +89,19 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
         {/* User Profile */}
         <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-lg mb-2">
-            <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-semibold">
-              {user?.full_name?.charAt(0) || 'U'}
+          {mounted && (
+            <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-lg mb-2">
+              <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white font-semibold">
+                {user?.full_name?.charAt(0) || 'U'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">
+                  {user?.full_name || 'User'}
+                </p>
+                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                {user?.full_name || 'User'}
-              </p>
-              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
-            </div>
-          </div>
+          )}
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-sm"

@@ -13,8 +13,8 @@ class CourseBase(BaseModel):
     short_description: Optional[str] = Field(None, max_length=500)
     difficulty_level: DifficultyLevel = DifficultyLevel.BEGINNER
     estimated_duration_hours: Optional[int] = Field(None, gt=0)
-    skills_taught: list[str] = []
-    prerequisites: list[dict] = []
+    skills_taught: List[str] = []
+    prerequisites: List[str] = []
     thumbnail_url: Optional[str] = None
 
 
@@ -29,9 +29,9 @@ class CourseUpdate(CourseBase):
     description: Optional[str] = None
     short_description: Optional[str] = Field(None, max_length=500)
     difficulty_level: Optional[DifficultyLevel] = None
-    est_duration_minutes: Optional[int] = Field(None, gt=0)
-    skills_taught: Optional[list[str]] = None
-    prerequisites: Optional[list[dict]] = None
+    estimated_duration_hours: Optional[int] = Field(None, gt=0)
+    skills_taught: Optional[List[str]] = None
+    prerequisites: Optional[List[str]] = None
     thumbnail_url: Optional[str] = None
     is_published: Optional[bool] = None
 
@@ -42,6 +42,7 @@ class CourseResponse(CourseBase):
     created_by: UUID
     is_published: bool
     total_enrollments: int
+    average_rating: Optional[float] = None
     created_at: datetime
     updated_at: datetime
     
@@ -57,9 +58,11 @@ class CourseListResponse(BaseModel):
     difficulty_level: DifficultyLevel
     estimated_duration_hours: Optional[int]
     skills_taught: List[str]
+    prerequisites: List[str]
     thumbnail_url: Optional[str]
     is_published: bool
     total_enrollments: int
+    average_rating: Optional[float] = None
     created_at: datetime
     
     class Config:

@@ -22,7 +22,7 @@ export default function LoginPage() {
       await authService.login({ email, password });
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed. Please try again.');
+      setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -45,7 +45,7 @@ export default function LoginPage() {
       await authService.login({ email, password });
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Demo login failed.');
+      setError(err.message || 'Demo login failed.');
     } finally {
       setLoading(false);
     }
@@ -72,7 +72,7 @@ export default function LoginPage() {
 
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-              {error}
+              {String(error)}
             </div>
           )}
 
