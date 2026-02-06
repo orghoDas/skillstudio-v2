@@ -7,6 +7,11 @@ function getErrorMessage(error: any): string {
     return 'Cannot connect to server. Please check if the backend is running on http://localhost:8000';
   }
   
+  // Authentication errors
+  if (error.response?.status === 401) {
+    return 'Not authenticated. Please log in to continue.';
+  }
+  
   // FastAPI validation errors
   if (error.response?.data?.detail) {
     const detail = error.response.data.detail;
@@ -115,10 +120,22 @@ export const assessmentService = {
   async listAssessments(diagnosticOnly: boolean = false): Promise<Assessment[]> {
     try {
       const url = diagnosticOnly ? '/assessments?diagnostic_only=true' : '/assessments';
+      console.log('🔍 Fetching assessments from:', url);
       const response = await api.get(url);
+      console.log('✅ Assessments loaded:', response.data.length, 'items');
       return response.data;
     } catch (error: any) {
-      console.error('Failed to list assessments:', getErrorMessage(error));
+      console.error('❌ Failed to list assessments:', {
+        url: error.config?.url,
+        method: error.config?.method,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        hasResponse: !!error.response,
+        hasRequest: !!error.request,
+        message: error.message,
+        fullError: error
+      });
       throw new Error(getErrorMessage(error));
     }
   },
@@ -126,10 +143,18 @@ export const assessmentService = {
   // Get assessment details
   async getAssessment(assessmentId: string): Promise<Assessment> {
     try {
+      console.log('🔍 Fetching assessment details:', assessmentId);
       const response = await api.get(`/assessments/${assessmentId}`);
+      console.log('✅ Assessment details loaded');
       return response.data;
     } catch (error: any) {
-      console.error('Failed to get assessment:', getErrorMessage(error));
+      console.error('❌ Failed to get assessment:', {
+        assessmentId,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message
+      });
       throw new Error(getErrorMessage(error));
     }
   },
@@ -137,10 +162,27 @@ export const assessmentService = {
   // Get questions for assessment (without answers for learners)
   async getQuestions(assessmentId: string): Promise<AssessmentQuestion[]> {
     try {
+      console.log('🔍 Fetching questions for assessment:', assessmentId);
+      const hasToken = typeof window !== 'undefined' && localStorage.getItem('token');
+      console.log('🔑 Auth token present:', !!hasToken);
       const response = await api.get(`/assessments/${assessmentId}/questions`);
+      console.log('✅ Questions loaded:', response.data.length, 'questions');
       return response.data;
     } catch (error: any) {
-      console.error('Failed to get questions:', getErrorMessage(error));
+      console.error('❌ Failed to get questions:', {
+        assessmentId,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        message: error.message,
+        isAuthError: error.response?.status === 401
+      });
+      
+      // Provide clearer error message for auth failures
+      if (error.response?.status === 401) {
+        throw new Error('Authentication required. Please log in to view questions.');
+      }
+      
       throw new Error(getErrorMessage(error));
     }
   },
