@@ -19,8 +19,13 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await authService.login({ email, password });
-      router.push('/dashboard');
+      const { user } = await authService.login({ email, password });
+      // Redirect based on user role
+      if (user.role === 'instructor') {
+        router.push('/instructor/dashboard');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.');
     } finally {
@@ -42,8 +47,13 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await authService.login({ email, password });
-      router.push('/dashboard');
+      const { user } = await authService.login({ email, password });
+      // Redirect based on user role
+      if (user.role === 'instructor') {
+        router.push('/instructor/dashboard');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (err: any) {
       setError(err.message || 'Demo login failed.');
     } finally {

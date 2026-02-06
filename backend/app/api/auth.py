@@ -26,7 +26,7 @@ from app.schemas.user import (
 
 router = APIRouter()
 
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
 async def register(
     user_data: UserCreate,
     db: AsyncSession = Depends(get_db)
@@ -38,6 +38,8 @@ async def register(
     - password: min 8 char, must contain letter and digit
     - full_name: user's full name
     - user_role: role of the user (LEARNER, INSTRUCTOR, ADMIN) - default LEARNER
+    
+    returns access token (30min) and refresh token (7 days) along with user details
     """
 
     # check if user already exists
@@ -62,7 +64,17 @@ async def register(
     await db.commit()
     await db.refresh(new_user)
 
-    return new_user
+    # create tokens for the new user
+    access_token = create_access_token(data={"sub": str(new_user.id)})
+    refresh_token = create_refresh_token(data={"sub": str(new_user.id)})
+
+    return TokenResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        token_type="bearer",
+        expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        user=UserResponse.from_orm(new_user)
+    )
 
 
 @router.post("/login", response_model=TokenResponse)

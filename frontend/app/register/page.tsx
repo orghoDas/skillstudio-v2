@@ -13,6 +13,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'learner' as 'learner' | 'instructor',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,8 +34,15 @@ export default function RegisterPage() {
         email: formData.email,
         password: formData.password,
         full_name: formData.full_name,
+        role: formData.role,
       });
-      router.push('/dashboard');
+      
+      // Redirect based on role
+      if (formData.role === 'instructor') {
+        router.push('/instructor/dashboard');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (err: any) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
@@ -66,6 +74,38 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                I want to
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'learner' })}
+                  className={`p-4 border-2 rounded-lg transition-all ${
+                    formData.role === 'learner'
+                      ? 'border-primary-600 bg-primary-50 text-primary-700'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="font-semibold">Learn</div>
+                  <div className="text-xs text-gray-600 mt-1">Take courses</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, role: 'instructor' })}
+                  className={`p-4 border-2 rounded-lg transition-all ${
+                    formData.role === 'instructor'
+                      ? 'border-primary-600 bg-primary-50 text-primary-700'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="font-semibold">Teach</div>
+                  <div className="text-xs text-gray-600 mt-1">Create courses</div>
+                </button>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Full Name

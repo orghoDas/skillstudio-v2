@@ -67,6 +67,30 @@ class User(Base):
         'AssessmentAttempt', back_populates='user', cascade='all, delete-orphan'
     )
 
+    reviews = relationship(
+        'CourseReview', back_populates='user', cascade='all, delete-orphan'
+    )
+
+    certificates = relationship(
+        'Certificate', back_populates='user', cascade='all, delete-orphan'
+    )
+
+    discussions = relationship(
+        'Discussion', back_populates='user', cascade='all, delete-orphan'
+    )
+
+    discussion_replies = relationship(
+        'DiscussionReply', back_populates='user', cascade='all, delete-orphan'
+    )
+
+    subscription = relationship(
+        'UserSubscription', back_populates='user', uselist=False, cascade='all, delete-orphan'
+    )
+
+    payments = relationship(
+        'Payment', back_populates='user', cascade='all, delete-orphan'
+    )
+
     def __repr__(self):
         return f'<User {self.email} ({self.role.value})>'
     

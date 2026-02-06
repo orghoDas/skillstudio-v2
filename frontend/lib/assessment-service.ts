@@ -201,6 +201,42 @@ export const assessmentService = {
     }
   },
 
+  // Get questions for an assessment (without answers)
+  async getQuestions(assessmentId: string): Promise<AssessmentQuestion[]> {
+    try {
+      const response = await api.get(`/assessments/${assessmentId}/questions`);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to get questions:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
+    }
+  },
+
+  // Submit assessment answers
+  async submitAssessment(
+    assessmentId: string,
+    submission: SubmitAnswerRequest
+  ): Promise<AssessmentAttempt> {
+    try {
+      const response = await api.post(`/assessments/${assessmentId}/submit`, submission);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to submit assessment:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
+    }
+  },
+
+  // Get specific attempt
+  async getAttempt(attemptId: string): Promise<AssessmentAttempt> {
+    try {
+      const response = await api.get(`/assessments/attempts/${attemptId}`);
+      return response.data;
+    } catch (error: any) {
+      console.error('Failed to get attempt:', getErrorMessage(error));
+      throw new Error(getErrorMessage(error));
+    }
+  },
+
   // Get AI-generated feedback for an attempt
   async getAIFeedback(attemptId: string): Promise<AIFeedback> {
     try {

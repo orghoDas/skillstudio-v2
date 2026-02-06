@@ -12,6 +12,24 @@ from app.models.ai_models import (
     RecommendationType,
     RecommendationAction
 )
+from app.models.social import (
+    CourseReview,
+    Certificate,
+    Discussion,
+    DiscussionReply,
+    DiscussionCategory
+)
+from app.models.monetization import (
+    SubscriptionPlan,
+    UserSubscription,
+    Payment,
+    InstructorEarnings,
+    InstructorPayout,
+    CoursePricing,
+    PaymentStatus,
+    PaymentMethod,
+    PayoutStatus
+)
 
 __all__ = [
     "User",
@@ -36,5 +54,19 @@ __all__ = [
     "LearnerEvent",
     "SnapshotType",
     "RecommendationType",
-    "RecommendationAction"
+    "RecommendationAction",
+    "CourseReview",
+    "Certificate",
+    "Discussion",
+    "DiscussionReply",
+    "DiscussionCategory",
+    "SubscriptionPlan",
+    "UserSubscription",
+    "Payment",
+    "InstructorEarnings",
+    "InstructorPayout",
+    "CoursePricing",
+    "PaymentStatus",
+    "PaymentMethod",
+    "PayoutStatus"
 ]
