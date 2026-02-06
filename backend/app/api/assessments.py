@@ -11,6 +11,7 @@ from app.models.user import User
 from app.models.assessment import Assessment, AssessmentQuestion, AssessmentAttempt
 from app.models.learner_profile import LearnerProfile
 from app.schemas.assessment import AssessmentCreate, AssessmentResponse, QuestionCreate, QuestionResponse, QuestionWithAnswer, SubmitAnswerRequest, AssessmentAttemptResponse, DiagnosticResultResponse
+from app.services.adaptive_assessment import AdaptiveAssessmentEngine, AIFeedbackGenerator
 
 
 router = APIRouter()
@@ -386,3 +387,93 @@ def generate_initial_learning_path(skill_levels: dict, knowledge_gaps: List[str]
         })
 
     return path
+
+
+# Adaptive Assessment Endpoints
+@router.post('/adaptive/{assessment_id}/next-question')
+async def get_adaptive_next_question(
+    assessment_id: str,
+    previous_answers: List[dict] = None,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get the next question with adaptive difficulty based on previous performance.
+    Questions adjust dynamically to the learner's skill level.
+    """
+    engine = AdaptiveAssessmentEngine(db)
+    next_question = await engine.get_next_question(
+        user_id=str(current_user.id),
+        assessment_id=assessment_id,
+        previous_answers=previous_answers or []
+    )
+    
+    if not next_question:
+        return {"message": "No more questions available", "completed": True}
+    
+    return next_question
+
+
+@router.post('/attempts/{attempt_id}/ai-feedback')
+async def get_ai_feedback(
+    attempt_id: str,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get comprehensive AI-generated feedback for an assessment attempt.
+    
+    Includes:
+    - Performance analysis
+    - Strengths and improvement areas
+    - Personalized recommendations
+    - Progress comparison with previous attempts
+    - Suggested next steps
+    """
+    # Verify the attempt belongs to the current user
+    attempt_result = await db.execute(
+        select(AssessmentAttempt)
+        .where(AssessmentAttempt.id == attempt_id)
+    )
+    attempt = attempt_result.scalar_one_or_none()
+    
+    if not attempt:
+        raise HTTPException(status_code=404, detail="Attempt not found")
+    
+    if str(attempt.user_id) != str(current_user.id):
+        raise HTTPException(status_code=403, detail="Not authorized to view this feedback")
+    
+    feedback_generator = AIFeedbackGenerator(db)
+    feedback = await feedback_generator.generate_comprehensive_feedback(
+        user_id=str(current_user.id),
+        attempt_id=attempt_id
+    )
+    
+    if "error" in feedback:
+        raise HTTPException(status_code=404, detail=feedback["error"])
+    
+    return feedback
+
+
+@router.post('/adaptive/{assessment_id}/calculate-score')
+async def calculate_adaptive_score(
+    assessment_id: str,
+    answers: List[dict],
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Calculate difficulty-weighted score for adaptive assessment.
+    Harder questions are worth more points.
+    """
+    engine = AdaptiveAssessmentEngine(db)
+    score_data = await engine.calculate_adaptive_score(
+        answers=answers,
+        assessment_id=assessment_id
+    )
+    
+    return {
+        "user_id": str(current_user.id),
+        "assessment_id": assessment_id,
+        **score_data
+    }
