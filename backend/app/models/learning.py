@@ -60,6 +60,9 @@ class Enrollment(Base):
     progress_percentage = Column(Integer, default=0)
     current_module_id = Column(UUID(as_uuid=True), ForeignKey("modules.id"), nullable=True)
     current_lesson_id = Column(UUID(as_uuid=True), ForeignKey("lessons.id"), nullable=True)
+    
+    status = Column(String(50), nullable=False, default='active')  # active, completed, dropped
+    certificate_url = Column(String(512), nullable=True)
 
     enrolled_at = Column(DateTime(timezone=True), server_default=func.now())
     last_accessed = Column(DateTime(timezone=True), nullable=True)

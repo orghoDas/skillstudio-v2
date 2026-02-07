@@ -22,6 +22,7 @@ from app.schemas.user import (
     UserResponse,
     TokenResponse
 )
+from app.services.email_service import email_service
 
 
 router = APIRouter()
@@ -63,6 +64,16 @@ async def register(
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
+
+    # Send welcome email (async, don't wait)
+    try:
+        await email_service.send_welcome_email(
+            user_email=new_user.email,
+            user_name=new_user.full_name
+        )
+    except Exception as e:
+        # Log error but don't fail registration
+        print(f"Failed to send welcome email: {e}")
 
     # create tokens for the new user
     access_token = create_access_token(data={"sub": str(new_user.id)})

@@ -141,10 +141,15 @@ async def enroll_in_course(
     if existing_enrollment:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Already enrolled in this course")
     
+    # Get instructor details for email
+    instructor_result = await db.execute(select(User).where(User.id == course.created_by))
+    instructor = instructor_result.scalar_one()
+    
     new_enrollment = Enrollment(
         user_id=current_user.id,
         course_id=enrollment_data.course_id,
-        learning_goal_id=enrollment_data.learning_goal_id
+        learning_goal_id=enrollment_data.learning_goal_id,
+        status='active'
     )
 
     db.add(new_enrollment)
@@ -153,6 +158,19 @@ async def enroll_in_course(
     course.total_enrollments += 1
     await db.commit()
     await db.refresh(new_enrollment)
+    
+    # Send enrollment confirmation email
+    try:
+        await email_service.send_enrollment_confirmation(
+            user_email=current_user.email,
+            user_name=current_user.full_name,
+            course_title=course.title,
+            course_description=course.short_description or course.description[:200],
+            instructor_name=instructor.full_name,
+            start_date=datetime.utcnow().strftime("%B %d, %Y")
+        )
+    except Exception as e:
+        print(f"Failed to send enrollment confirmation email: {e}")
 
     return new_enrollment
 

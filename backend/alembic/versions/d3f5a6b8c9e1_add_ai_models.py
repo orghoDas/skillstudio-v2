@@ -1,6 +1,6 @@
 """Add AI models tables
 
-Revision ID: add_ai_models
+Revision ID: d3f5a6b8c9e1
 Revises: c2805e67387e
 Create Date: 2026-02-04
 
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = 'add_ai_models'
+revision = 'd3f5a6b8c9e1'
 down_revision = 'c2805e67387e'
 branch_labels = None
 depends_on = None

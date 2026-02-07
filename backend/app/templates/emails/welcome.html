@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to {{ platform_name }}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #1f2937;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 14px 28px;
+            background-color: #2563eb;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+        .features {
+            background-color: #f9fafb;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .feature-item {
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        .feature-item:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎓 {{ platform_name }}</div>
+        </div>
+        
+        <h1>Welcome, {{ user_name }}! 🚀</h1>
+        
+        <p>We're thrilled to have you join our learning community! Your journey to mastering new skills starts now.</p>
+        
+        <div class="features">
+            <h3 style="margin-top: 0;">What you can do:</h3>
+            <div class="feature-item">Browse thousands of courses</div>
+            <div class="feature-item">Get AI-powered personalized learning paths</div>
+            <div class="feature-item">Track your progress with detailed analytics</div>
+            <div class="feature-item">Connect with instructors and fellow learners</div>
+            <div class="feature-item">Earn certificates upon course completion</div>
+        </div>
+        
+        <p style="text-align: center;">
+            <a href="{{ dashboard_url }}" class="button">Go to Your Dashboard</a>
+        </p>
+        
+        <p>If you have any questions, feel free to reach out to our support team. We're here to help!</p>
+        
+        <p>Happy learning!<br>
+        <strong>The {{ platform_name }} Team</strong></p>
+        
+        <div class="footer">
+            <p>You're receiving this email because you created an account on {{ platform_name }}.</p>
+            <p>&copy; 2026 {{ platform_name }}. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

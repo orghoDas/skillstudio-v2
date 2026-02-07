@@ -10,7 +10,7 @@ class NotificationBase(BaseModel):
     message: str
     type: NotificationType
     action_url: Optional[str] = None
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    meta_data: Dict[str, Any] = Field(default_factory=dict)
 
 
 class NotificationCreate(NotificationBase):

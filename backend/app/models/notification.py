@@ -42,7 +42,7 @@ class Notification(Base):
     discussion_id = Column(UUID(as_uuid=True), nullable=True)
     
     # Metadata for additional data (e.g., actor name, amounts, etc.)
-    metadata = Column(JSONB, nullable=False, default=dict)
+    meta_data = Column(JSONB, nullable=False, default=dict)
     
     # Action URL (where to redirect when clicked)
     action_url = Column(String(512), nullable=True)

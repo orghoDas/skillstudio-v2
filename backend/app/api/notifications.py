@@ -238,7 +238,7 @@ async def create_notification(
         enrollment_id=enrollment_id,
         payment_id=payment_id,
         discussion_id=discussion_id,
-        metadata=metadata or {},
+        meta_data=metadata or {},
     )
     db.add(notification)
     await db.commit()

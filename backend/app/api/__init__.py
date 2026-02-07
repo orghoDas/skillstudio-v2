@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api import auth, courses, learning, profile, assessments, dashboard, ai, instructor, social, monetization, search, notifications, admin, chat, live_class, collaborative
+from app.api import auth, courses, learning, profile, assessments, dashboard, ai, instructor, social, monetization, search, notifications, admin, chat, live_class, collaborative, upload, certificates
 
 api_router = APIRouter()
 
@@ -20,5 +20,7 @@ api_router.include_router(admin.router, tags=["Admin"])
 api_router.include_router(chat.router, tags=["Chat"])
 api_router.include_router(live_class.router, tags=["Live Classes"])
 api_router.include_router(collaborative.router, tags=["Collaborative Editing"])
+api_router.include_router(upload.router, tags=["File Upload"])
+api_router.include_router(certificates.router, tags=["Certificates"])
 
 __all__ = ["api_router"]

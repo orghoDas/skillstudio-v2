@@ -1,7 +1,7 @@
 """add_average_rating_to_courses
 
 Revision ID: f8269958cf68
-Revises: add_ai_models
+Revises: i5j6k7l8m9n0
 Create Date: 2026-02-06 21:54:45.498738
 
 """
@@ -13,7 +13,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision: str = 'f8269958cf68'
-down_revision: Union[str, None] = 'add_ai_models'
+down_revision: Union[str, None] = 'i5j6k7l8m9n0'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
