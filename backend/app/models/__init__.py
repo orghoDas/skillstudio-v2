@@ -35,6 +35,22 @@ from app.models.notification import (
     NotificationPreference,
     NotificationType
 )
+from app.models.gamification import (
+    Achievement,
+    UserAchievement,
+    UserStats,
+    XPTransaction,
+    LeaderboardCache,
+    AchievementCategory,
+    AchievementRarity
+)
+from app.models.video_and_analytics import (
+    VideoAnalytics,
+    PlatformAnalytics,
+    CourseAnalytics,
+    InstructorAnalytics,
+    VideoStatus
+)
 
 __all__ = [
     "User",
@@ -76,5 +92,17 @@ __all__ = [
     "PayoutStatus",
     "Notification",
     "NotificationPreference",
-    "NotificationType"
+    "NotificationType",
+    "Achievement",
+    "UserAchievement",
+    "UserStats",
+    "XPTransaction",
+    "LeaderboardCache",
+    "AchievementCategory",
+    "AchievementRarity",
+    "VideoAnalytics",
+    "PlatformAnalytics",
+    "CourseAnalytics",
+    "InstructorAnalytics",
+    "VideoStatus"
 ]

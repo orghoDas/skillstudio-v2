@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime, timedelta
 
 from app.core.database import get_db
-from app.core.auth import get_current_user, require_instructor
+from app.core.dependencies import get_current_user, get_current_active_instructor
 from app.core.websocket_manager import manager
 from app.models.user import User
 from app.models.course import Course
@@ -25,7 +25,7 @@ router = APIRouter(prefix="/live-classes", tags=["Live Classes"])
 @router.post("", response_model=LiveClassResponse)
 async def create_live_class(
     session_data: LiveClassCreate,
-    current_user: User = Depends(require_instructor),
+    current_user: User = Depends(get_current_active_instructor),
     db: AsyncSession = Depends(get_db)
 ):
     """Schedule a new live class session (Instructors only)"""
@@ -145,7 +145,7 @@ async def get_live_class(
 async def update_live_class(
     session_id: uuid.UUID,
     session_data: LiveClassUpdate,
-    current_user: User = Depends(require_instructor),
+    current_user: User = Depends(get_current_active_instructor),
     db: AsyncSession = Depends(get_db)
 ):
     """Update a live class session (Instructor only)"""
@@ -177,7 +177,7 @@ async def update_live_class(
 async def start_live_class(
     session_id: uuid.UUID,
     meeting_url: str = Query(..., description="Video conferencing URL"),
-    current_user: User = Depends(require_instructor),
+    current_user: User = Depends(get_current_active_instructor),
     db: AsyncSession = Depends(get_db)
 ):
     """Start a live class session (Instructor only)"""
@@ -312,7 +312,7 @@ async def leave_live_class(
 async def end_live_class(
     session_id: uuid.UUID,
     recording_url: Optional[str] = None,
-    current_user: User = Depends(require_instructor),
+    current_user: User = Depends(get_current_active_instructor),
     db: AsyncSession = Depends(get_db)
 ):
     """End a live class session (Instructor only)"""
@@ -377,7 +377,7 @@ async def get_session_attendees(
 @router.delete("/{session_id}")
 async def delete_live_class(
     session_id: uuid.UUID,
-    current_user: User = Depends(require_instructor),
+    current_user: User = Depends(get_current_active_instructor),
     db: AsyncSession = Depends(get_db)
 ):
     """Delete a live class session (Instructor only)"""

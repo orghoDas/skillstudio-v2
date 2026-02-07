@@ -63,6 +63,7 @@ class Course(Base):
     discussions = relationship("Discussion", back_populates="course", cascade="all, delete-orphan")
     payments = relationship("Payment", back_populates="course")
     pricing = relationship("CoursePricing", back_populates="course", uselist=False, cascade="all, delete-orphan")
+    analytics = relationship("CourseAnalytics", back_populates="course", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Course {self.ttle}>"
@@ -138,6 +139,7 @@ class Lesson(Base):
     module = relationship("Module", back_populates="lessons")
     progress_records = relationship("LessonProgress", back_populates="lesson", cascade="all, delete-orphan")
     discussions = relationship("Discussion", back_populates="lesson", cascade="all, delete-orphan")
+    video_analytics = relationship("VideoAnalytics", back_populates="lesson", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Lesson {self.title}>"

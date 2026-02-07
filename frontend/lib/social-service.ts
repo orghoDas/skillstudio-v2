@@ -151,11 +151,8 @@ export const socialService = {
   },
 
   // ==================== CERTIFICATES ====================
-
-  async generateCertificate(courseId: string): Promise<Certificate> {
-    const response = await api.post(`/social/certificates/generate/${courseId}`);
-    return response.data;
-  },
+  // Note: Certificate generation is handled by /certificates/generate/{enrollment_id} endpoint
+  // See: frontend/components/CertificateDisplay.tsx
 
   async getMyCertificates(): Promise<Certificate[]> {
     const response = await api.get('/social/certificates/my');

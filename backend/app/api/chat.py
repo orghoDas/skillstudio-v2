@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime
 
 from app.core.database import get_db
-from app.core.auth import get_current_user
+from app.core.dependencies import get_current_user
 from app.core.websocket_manager import manager
 from app.models.user import User
 from app.models.realtime import (

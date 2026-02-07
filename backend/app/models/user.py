@@ -99,6 +99,33 @@ class User(Base):
         'NotificationPreference', back_populates='user', uselist=False, cascade='all, delete-orphan'
     )
 
+    # Gamification relationships
+    achievements = relationship(
+        'UserAchievement', back_populates='user', cascade='all, delete-orphan'
+    )
+
+    stats = relationship(
+        'UserStats', back_populates='user', uselist=False, cascade='all, delete-orphan'
+    )
+
+    xp_transactions = relationship(
+        'XPTransaction', back_populates='user', cascade='all, delete-orphan'
+    )
+
+    leaderboard_entry = relationship(
+        'LeaderboardCache', back_populates='user', uselist=False, cascade='all, delete-orphan'
+    )
+
+    # Video analytics relationships
+    video_analytics = relationship(
+        'VideoAnalytics', back_populates='user', cascade='all, delete-orphan'
+    )
+
+    # Instructor analytics
+    instructor_analytics = relationship(
+        'InstructorAnalytics', back_populates='instructor', cascade='all, delete-orphan'
+    )
+
     def __repr__(self):
         return f'<User {self.email} ({self.role.value})>'
     

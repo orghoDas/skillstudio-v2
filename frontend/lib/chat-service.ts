@@ -2,7 +2,7 @@
  * Chat service for managing chat rooms and messages
  */
 
-import { api } from './api';
+import api from './api';
 
 export interface ChatRoom {
   id: string;

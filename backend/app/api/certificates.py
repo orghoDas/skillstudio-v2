@@ -8,9 +8,10 @@ from datetime import datetime
 from typing import Optional
 
 from app.core.database import get_db
-from app.core.auth import get_current_user
+from app.core.dependencies import get_current_user
 from app.models.user import User
-from app.models.course import Course, Enrollment
+from app.models.course import Course
+from app.models.learning import Enrollment
 from app.services.certificate_service import certificate_generator
 from app.services.s3_service import s3_service
 from app.services.email_service import email_service

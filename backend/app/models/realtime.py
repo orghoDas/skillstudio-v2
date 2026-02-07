@@ -39,7 +39,7 @@ class ChatRoom(Base):
     # Room settings
     is_active = Column(Boolean, default=True, nullable=False)
     max_participants = Column(Integer, nullable=True)  # null = unlimited
-    metadata = Column(JSONB, default=dict, nullable=False)  # Extra settings
+    room_metadata = Column(JSONB, default=dict, nullable=False)  # Extra settings (renamed from metadata to avoid SQLAlchemy reserved word)
     
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -89,7 +89,7 @@ class ChatMessage(Base):
     # Message content
     message_type = Column(SQLEnum(MessageType), nullable=False, default=MessageType.TEXT)
     content = Column(Text, nullable=False)
-    metadata = Column(JSONB, default=dict, nullable=False)  # File URLs, code language, etc.
+    room_metadata = Column(JSONB, default=dict, nullable=False)  # File URLs, code language, etc.
     
     # Message status
     is_edited = Column(Boolean, default=False, nullable=False)
@@ -147,7 +147,7 @@ class LiveClassSession(Base):
     
     # Status
     status = Column(String(50), default="scheduled", nullable=False)  # scheduled, live, ended, cancelled
-    metadata = Column(JSONB, default=dict, nullable=False)
+    room_metadata = Column(JSONB, default=dict, nullable=False)
     
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -219,7 +219,7 @@ class CollaborativeSession(Base):
     is_public = Column(Boolean, default=False, nullable=False)
     access_code = Column(String(50), nullable=True)  # Optional access code
     
-    metadata = Column(JSONB, default=dict, nullable=False)
+    room_metadata = Column(JSONB, default=dict, nullable=False)
     
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

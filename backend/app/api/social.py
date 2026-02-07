@@ -252,13 +252,21 @@ async def mark_review_helpful(
 
 # ==================== CERTIFICATES ====================
 
-@router.post('/certificates/generate/{course_id}', response_model=CertificateResponse, status_code=status.HTTP_201_CREATED)
+@router.post('/certificates/generate/{course_id}', response_model=CertificateResponse, status_code=status.HTTP_201_CREATED, deprecated=True)
 async def generate_certificate(
     course_id: UUID,
     current_user: User = Depends(get_current_active_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Generate certificate for course completion"""
+    """
+    [DEPRECATED] Generate certificate for course completion
+    
+    This endpoint is deprecated. Please use POST /certificates/generate/{enrollment_id} instead,
+    which generates actual PDF certificates and provides better validation.
+    
+    This endpoint creates a Certificate database record using course_id,
+    while the preferred endpoint uses enrollment_id for more precise tracking.
+    """
     
     # Check if already has certificate
     result = await db.execute(

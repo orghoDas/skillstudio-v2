@@ -9,7 +9,7 @@ from app.core.database import get_db
 from app.core.dependencies import get_current_active_instructor
 from app.models.user import User
 from app.models.course import Course
-from app.models.learning import Enrollment, Progress
+from app.models.learning import Enrollment, LessonProgress
 from pydantic import BaseModel
 
 

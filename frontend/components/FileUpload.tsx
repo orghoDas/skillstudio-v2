@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Upload, X, File, CheckCircle, AlertCircle } from 'lucide-react';
-import { api } from '@/lib/api';
+import api from '@/lib/api';
 
 interface FileUploadProps {
   onUploadComplete?: (url: string) => void;

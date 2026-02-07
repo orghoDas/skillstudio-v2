@@ -5,7 +5,7 @@ from typing import List
 import logging
 
 from app.core.database import get_db
-from app.core.auth import get_current_user, require_instructor
+from app.core.dependencies import get_current_user, get_current_active_instructor
 from app.models.user import User
 from app.services.s3_service import s3_service
 from app.schemas.upload import UploadResponse, FileType
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 @router.post("/video", response_model=UploadResponse)
 async def upload_video(
     file: UploadFile = File(...),
-    current_user: User = Depends(require_instructor),
+    current_user: User = Depends(get_current_active_instructor),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -113,7 +113,7 @@ async def upload_image(
 @router.post("/document", response_model=UploadResponse)
 async def upload_document(
     file: UploadFile = File(...),
-    current_user: User = Depends(require_instructor),
+    current_user: User = Depends(get_current_active_instructor),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -160,7 +160,7 @@ async def upload_document(
 @router.post("/batch", response_model=List[UploadResponse])
 async def upload_batch(
     files: List[UploadFile] = File(...),
-    current_user: User = Depends(require_instructor),
+    current_user: User = Depends(get_current_active_instructor),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -219,7 +219,7 @@ async def upload_batch(
 async def delete_file(
     file_type: str,
     filename: str,
-    current_user: User = Depends(require_instructor),
+    current_user: User = Depends(get_current_active_instructor),
     db: AsyncSession = Depends(get_db)
 ):
     """Delete an uploaded file (Instructors only)"""

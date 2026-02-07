@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Download, Award, CheckCircle } from 'lucide-react';
-import { api } from '@/lib/api';
+import api from '@/lib/api';
 
 interface CertificateDisplayProps {
   enrollmentId: string;

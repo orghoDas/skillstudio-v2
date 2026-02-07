@@ -57,7 +57,7 @@ class SubscriptionPlanResponse(SubscriptionPlanBase):
 class UserSubscriptionCreate(BaseModel):
     """Schema for creating a user subscription"""
     plan_id: UUID
-    billing_cycle: str = Field(..., regex="^(monthly|yearly)$")
+    billing_cycle: str = Field(..., pattern="^(monthly|yearly)$")
     stripe_payment_method_id: Optional[str] = None
 
 
@@ -216,7 +216,7 @@ class EarningsSummary(BaseModel):
 class PayoutRequest(BaseModel):
     """Schema for requesting a payout"""
     amount: Decimal = Field(..., gt=0)
-    payout_method: str = Field(..., regex="^(bank_transfer|paypal|stripe)$")
+    payout_method: str = Field(..., pattern="^(bank_transfer|paypal|stripe)$")
     payout_details: Dict[str, Any] = {}
 
 
@@ -255,7 +255,7 @@ class CheckoutRequest(BaseModel):
     """Schema for checkout request"""
     course_id: Optional[UUID] = None
     subscription_plan_id: Optional[UUID] = None
-    billing_cycle: Optional[str] = Field(None, regex="^(monthly|yearly)$")
+    billing_cycle: Optional[str] = Field(None, pattern="^(monthly|yearly)$")
     payment_method: PaymentMethod = PaymentMethod.STRIPE
     
     @validator('billing_cycle')

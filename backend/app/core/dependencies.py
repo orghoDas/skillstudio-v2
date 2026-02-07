@@ -101,6 +101,15 @@ async def get_current_active_instructor(
     return current_user
 
 
+async def get_current_active_user(
+        current_user: User = Depends(get_current_user)
+) -> User:
+    """
+    Dependency to ensure the current user is active (alias for get_current_user for compatibility).
+    """
+    return current_user
+
+
 async def get_current_active_admin(
         current_user: User = Depends(get_current_user)
 ) -> User:
@@ -116,5 +125,8 @@ async def get_current_active_admin(
     
     return current_user
 
+
+# Alias for compatibility
+get_current_admin = get_current_active_admin
 
 
