@@ -122,45 +122,45 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
           Welcome back, {authService.getCurrentUser()?.full_name?.split(' ')[0]}! 👋
         </h1>
-        <p className="text-gray-600">Here's your personalized learning journey</p>
+        <p className="text-sm md:text-base text-gray-600">Here's your personalized learning journey</p>
       </div>
 
       {/* Next Best Action */}
       {nextAction && (
-        <div className="mb-8 bg-gradient-to-r from-primary-500 to-purple-600 rounded-xl p-6 text-white">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
+        <div className="mb-6 md:mb-8 bg-gradient-to-r from-primary-500 to-purple-600 rounded-xl p-4 md:p-6 text-white">
+          <div className="flex flex-col md:flex-row items-start md:justify-between gap-4">
+            <div className="flex-1 w-full">
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-5 h-5" />
-                <span className="text-sm font-medium opacity-90">AI Recommendation</span>
+                <Sparkles className="w-4 md:w-5 h-4 md:h-5" />
+                <span className="text-xs md:text-sm font-medium opacity-90">AI Recommendation</span>
               </div>
-              <h2 className="text-2xl font-bold mb-2">
+              <h2 className="text-xl md:text-2xl font-bold mb-2">
                 {String(nextAction.action || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </h2>
-              <p className="text-white/90 mb-4">
+              <p className="text-sm md:text-base text-white/90 mb-4">
                 {typeof nextAction.reason === 'string' ? nextAction.reason : JSON.stringify(nextAction.reason)}
               </p>
               <button 
                 onClick={handleNextAction}
-                className="bg-white text-primary-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center gap-2"
+                className="bg-white text-primary-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm md:text-base"
               >
                 Take Action
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
-            <Target className="w-16 h-16 opacity-20" />
+            <Target className="hidden md:block w-16 h-16 opacity-20" />
           </div>
         </div>
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
         <div className="card">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-medium text-gray-600">Recommended Courses</h3>
@@ -197,21 +197,21 @@ export default function DashboardPage() {
 
       {/* Course Recommendations */}
       <div>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-primary-600" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 md:mb-6 gap-3">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Sparkles className="w-5 md:w-6 h-5 md:h-6 text-primary-600" />
             Recommended for You
           </h2>
           <button 
             onClick={() => router.push('/dashboard/courses')}
-            className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center gap-1"
+            className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center gap-1 self-start sm:self-auto"
           >
             View All Courses
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {recommendations.map((course) => (
             <div key={course.course_id} className="card hover:shadow-md transition-shadow">
               {/* Score Badge */}
